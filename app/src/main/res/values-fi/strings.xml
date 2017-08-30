@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aikamatkaaja</string>
+    <string name="permission_request">Sovellus tarvitsee käyttöoikeuden.</string>
+    <string name="top5apps_label">Top5-Sovellukset</string>
+    <string name="totaltimeusage">Tässä on kokonaiskäyttöaika.</string>
+    <string name="lastusedpage_title">Viimeksi käytetyt sovellukset.</string>
+    <string name="top5appspage_title">Top5-Sovellusten käyttöaika</string>
+    <string name="usagerequestfailed_text">Tietojen hakeminen epäonnistui.  Et ole ehkä käyttänyt 5 sovellusta tänään.</string>
+    <string name="refreshing_ready">Päivitetty</string>
+    <string name="daily_text">Päivittäinen</string>
+    <string name="monthly_text">Kuukausittainen</string>
+    <string name="weekly_text">Viikottainen</string>
+    <string name="yearly_text">Vuosittainen</string>
+    <string name="totalusage_text_daily">Ruutuaika tänään:</string>
+    <string name="totalusage_text_monthly">"Ruutuaika tässä kuussa: "</string>
+    <string name="totalusage_text_weekly">"Ruutuaika tällä viikolla: "</string>
+    <string name="totalusage_text_yearly">"Ruutuaika tälle vuodelle: "</string>
+    <string name="avgtime_thisweek">"Keskiarvo tällä viikolla: "</string>
+</resources>

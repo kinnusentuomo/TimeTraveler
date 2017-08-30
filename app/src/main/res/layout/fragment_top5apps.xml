@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/backgroundstripesleft">
+
+
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <tuomomees.screentimecalculator.customTextView
+            android:id="@+id/textViewTotalTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/totaltimeusage"
+            android:layout_column="1"
+            style="@style/TextViewTheme"
+            />
+    </TableRow>
+
+
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <tuomomees.screentimecalculator.customTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/top5apps_label"
+            android:textAlignment="center"
+            android:layout_column="1"
+            style="@style/TextViewTheme"
+            />
+
+    </TableRow>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@drawable/bg_spinner">
+
+        <Spinner
+            style="@style/Widget.AppCompat.DropDownItem.Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:id="@+id/spinnerQuerySelect"
+            />
+    </RelativeLayout>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/imageViewTop1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
+            app:srcCompat="@mipmap/ic_launcher_round" />
+
+        <tuomomees.screentimecalculator.customTextView
+            android:id="@+id/top1App"
+            style="@style/TextViewTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left|left"
+            android:scrollbars="vertical"
+            android:text="Tähän tulee top1 sovelluksen tiedot" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/imageViewTop2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/ic_launcher_round"
+            android:layout_gravity="center|left"
+            />
+
+        <tuomomees.screentimecalculator.customTextView
+            android:id="@+id/top2App"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tähän tulee top2 sovelluksen tiedot"
+            style="@style/TextViewTheme"
+            android:layout_gravity="center|left"
+            />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        >
+
+        <ImageView
+            android:id="@+id/imageViewTop3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/ic_launcher_round"
+            android:layout_gravity="center|left"
+            />
+
+        <tuomomees.screentimecalculator.customTextView
+            android:id="@+id/top3App"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tähän tulee top3 sovelluksen tiedot"
+            style="@style/TextViewTheme"
+            android:layout_gravity="center|left"
+            />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        >
+
+        <ImageView
+            android:id="@+id/imageViewTop4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/ic_launcher_round"
+            android:layout_gravity="center|left"
+            />
+
+        <tuomomees.screentimecalculator.customTextView
+            android:id="@+id/top4App"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tähän tulee top4 sovelluksen tiedot"
+            style="@style/TextViewTheme"
+            android:layout_gravity="center|left"
+            />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        >
+
+        <ImageView
+            android:id="@+id/imageViewTop5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/ic_launcher_round"
+            android:layout_gravity="center|left"
+            />
+
+        <tuomomees.screentimecalculator.customTextView
+            android:id="@+id/top5App"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tähän tulee top5 sovelluksen tiedot"
+            style="@style/TextViewTheme"
+            android:layout_gravity="center|left"
+            />
+    </TableRow>
+</TableLayout>

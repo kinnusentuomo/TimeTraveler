@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Time traveler</string>
+    <string name="permission_request">This app needs usage acces.</string>
+    <string name="top5apps_label">Top5-Apps</string>
+    <string name="totaltimeusage">Here is total app usage.</string>
+    <string name="top5appspage_title">Top5-Apps total usage</string>
+    <string name="lastusedpage_title">Last used apps</string>
+    <string name="totalusage_text_daily">Total usage today: </string>
+    <string name="totalusage_text_weekly">Total usage this week: </string>
+    <string name="totalusage_text_monthly">Total usage this month: </string>
+    <string name="totalusage_text_yearly">Total usage this year: </string>
+    <string name="usagerequestfailed_text">Requesting required information failed. \r\n You might have not used 5 apps today yet.</string>
+    <string name="avgtime_thisweek">AVG time this week: </string>
+    <string name="refreshing_ready">Refreshed</string>
+    <string name="daily_text">Daily</string>
+    <string name="weekly_text">Weekly</string>
+    <string name="monthly_text">Monthly</string>
+    <string name="yearly_text">Yearly</string>
+
+    <string-array name="queries_array">
+        <item>@string/daily_text</item>
+        <item>@string/weekly_text</item>
+        <item>@string/monthly_text</item>
+        <item>@string/yearly_text</item>
+    </string-array>
+</resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:targetSdkVersion="22"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="tuomomees.screentimecalculator">
+
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/app_icon_png_48"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/app_icon_png_48"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity"
+            android:theme="@style/SplashTheme">
+
+        <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+
+
+            <receiver android:name=".PowerConnectionReceiver">
+                <intent-filter>
+                    <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                    <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+                </intent-filter>
+            </receiver>
+
+        </activity>
+        <activity android:name=".WeeklyBarDiagramFragment" />
+
+
+    </application>
+
+</manifest>
