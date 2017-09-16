@@ -67,6 +67,7 @@ public class AppStatsWeeklyQueryThread extends Thread{
     {
         totalUsageTime = 0;
 
+        totalUsageMonday = 0;
         totalUsageTuesday = 0;
         totalUsageWednesday = 0;
         totalUsageThursday = 0;
