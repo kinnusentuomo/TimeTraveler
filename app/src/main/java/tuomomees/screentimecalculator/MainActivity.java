@@ -15,7 +15,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 
-public class MainActivity extends FragmentActivity{
+public class MainActivity extends FragmentActivity {
 
     //näytön koon muuttujat
     int height, width;
@@ -45,6 +45,12 @@ public class MainActivity extends FragmentActivity{
         lastTimeUsedFragment = new LastTimeUsedFragment();
         weeklyBarDiagramFragment = new WeeklyBarDiagramFragment();
 
+
+
+
+
+
+
         //Alustaa liukupäivityksen käyttöön
         initializeSwipeRefresh();
 
@@ -64,11 +70,25 @@ public class MainActivity extends FragmentActivity{
 
     public void initializeThreads()
     {
+
+
+
+
         Context context = this.getApplicationContext();
         appStatsQueryThread = new AppStatsQueryThread(context);
         appStatsWeeklyQueryThread = new AppStatsWeeklyQueryThread(context);
         appStatsWeeklyQueryThread.run();
         appStatsQueryThread.run();
+
+
+
+        //Testataan uutta Threadia
+        AppInfoGetterThread appInfoGetterThread = new AppInfoGetterThread();
+        appInfoGetterThread.initializeContext(context);
+        appInfoGetterThread.initializeActivity(this);
+        appInfoGetterThread.start();
+        //appInfoGetterThread.run();
+
         //odotellaan, että thread on valmis
         try {
             appStatsQueryThread.join();
@@ -120,6 +140,7 @@ public class MainActivity extends FragmentActivity{
         adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
     }
+
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
         private  int NUM_ITEMS = 3;

@@ -15,8 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 
 public class AppStatsManager extends AppCompatActivity {
 
-    //TODO: tähän tarvitaan Stringi
-    String applicationName = "Noutaminen ei onnistunut";
+    String applicationName = null;
     Context mContext;
 
     @Override
@@ -36,10 +35,6 @@ public class AppStatsManager extends AppCompatActivity {
             applicationName = (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA));
 
         } catch (PackageManager.NameNotFoundException e) {
-
-            //Aiheuttaa errorin, mikäli käytössä viikottainen haku
-            //Toast toast = Toast.makeText(this, "error in getting name", Toast.LENGTH_SHORT);
-            //toast.show();
             e.printStackTrace();
         }
 
@@ -54,9 +49,8 @@ public class AppStatsManager extends AppCompatActivity {
         try {
             icon = packageManager.getApplicationIcon(packageName);
         } catch (PackageManager.NameNotFoundException e) {
-            //Toast toast = Toast.makeText(this, "error in getting icon", Toast.LENGTH_SHORT);
-            //toast.show();
-            icon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher_round, null);
+
+            icon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher_round, null); //Saattaa aiheuttaa crashin threadissa koska käyttää drawable
             e.printStackTrace();
         }
 

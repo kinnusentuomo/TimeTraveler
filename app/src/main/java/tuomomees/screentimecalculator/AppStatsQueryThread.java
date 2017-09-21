@@ -22,7 +22,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Luokan on luonut tuomo päivämäärällä 11.7.2017.
  */
 
-class AppStatsQueryThread extends Thread{
+class AppStatsQueryThread extends Thread implements Runnable{
 
     //TESTI
     private Map<String, UsageStats> usageStatsUsageTimeApps;
@@ -70,136 +70,29 @@ class AppStatsQueryThread extends Thread{
     public void run() {
 
         Log.d("Käynnistetään Thread", "QueryThread: OK");
+        boolean running = true;
 
-        //Asetetaan alkuarvot
-        setStartValues();
-
-        //Tarvitsee API 22
-        final UsageStatsManager lUsageStatsManager = (UsageStatsManager) mContext.getSystemService(Context.USAGE_STATS_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            //Hakee localen nykyisestä käyttökielestä
-            //String locale = Locale.getDefault().getCountry();
-            //Log.d("Locale", String.valueOf(locale));
-
-            long begin = 0;
-            long end = 0;
-
-            querySelection = getSharedPreferences("spinnerselection", "top5appsfragment");
-
-            if(querySelection != null)
+        try{
+            while(running)
             {
-                Log.d("query", querySelection);
-                if(querySelection.equals(mContext.getResources().getString(R.string.daily_text)))
-                {
-                    end = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(3);
-                    //timezone "UTC" toimii ainoastaan jos käytössä on GMT + 0
-                    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+03:00"));
-                    TimeZone tz = cal.getTimeZone();
-                    Log.d("Timezone", String.valueOf(tz.getDisplayName()));
-                    Log.d("Cal,instance", String.valueOf(cal.getTimeInMillis()));
-                    cal.set(Calendar.HOUR_OF_DAY, 3);
-                    cal.set(Calendar.MINUTE, 0);
-                    cal.set(Calendar.SECOND, 0);
-                    cal.set(Calendar.MILLISECOND, 0);
+                //Asetetaan alkuarvot
+                setStartValues();
 
-                    begin = cal.getTimeInMillis();
+                //Haetaan tarvittavat arvot
+                getStats();
 
-                }
-
-                //Ongelmallinen hakumetodi viikottainen, koska jenkeissä viikko alkaa sunnuntaista ja lopppuu lauantaihin (palauttaa siis SUN - SAT
-                if(querySelection.equals(mContext.getResources().getString(R.string.weekly_text)))
-                {
-                    Calendar cal1 = Calendar.getInstance(TimeZone.getTimeZone("GMT+03:00"));
-
-                    cal1.set(Calendar.HOUR_OF_DAY, 3);
-                    cal1.set(Calendar.MINUTE, 0);
-                    cal1.set(Calendar.SECOND, 0);
-                    cal1.set(Calendar.MILLISECOND, 0);
-
-                    end = cal1.getTimeInMillis();
-
-
-                    Log.d("getFirstDayOfWeek", String.valueOf(Calendar.getInstance().getFirstDayOfWeek()));
-                    
-                    int dayOfWeek = cal1.get(Calendar.DAY_OF_WEEK);
-                    Log.d("DOW", String.valueOf(dayOfWeek));
-
-                    if(cal1.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-                    {
-                        cal1.add(Calendar.DAY_OF_WEEK, 1);
-                        end = cal1.getTimeInMillis();
-                    }
-
-                    else
-                    {
-                        end = cal1.getTimeInMillis();
-                    }
-
-
-                    cal1.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); //TODO: tee tähän asetus, jolla voi valita aloitusviikonpäivän
-
-
-                    cal1.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-                    begin = cal1.getTimeInMillis();
-                }
-
-                if(querySelection.equals(mContext.getResources().getString(R.string.monthly_text)))
-                {
-                    Calendar cal1 = Calendar.getInstance(TimeZone.getTimeZone("GMT+3"));
-                    cal1.set(Calendar.HOUR_OF_DAY, 23);
-                    cal1.set(Calendar.MINUTE, 59);
-                    cal1.set(Calendar.SECOND, 59);
-                    cal1.set(Calendar.MILLISECOND, 99);
-
-                    int currentDOM = cal1.get(Calendar.DAY_OF_MONTH);
-                    Log.d("DOM", String.valueOf(currentDOM));
-                    end = cal1.getTimeInMillis();
-
-                    cal1.set(Calendar.HOUR_OF_DAY, 0);
-                    cal1.set(Calendar.MINUTE, 0);
-                    cal1.set(Calendar.SECOND, 0);
-                    cal1.set(Calendar.MILLISECOND, 0);
-                    cal1.set(Calendar.DAY_OF_MONTH, 1);
-
-                    begin = cal1.getTimeInMillis();
-                }
-
-                //YEARLY
-                if(querySelection.equals(mContext.getResources().getString(R.string.yearly_text)))
-                {
-                    Calendar cal1 = Calendar.getInstance(TimeZone.getTimeZone("GMT+3"));
-                    cal1.set(Calendar.HOUR_OF_DAY, 23);
-                    cal1.set(Calendar.MINUTE, 59);
-                    cal1.set(Calendar.SECOND, 59);
-                    cal1.set(Calendar.MILLISECOND, 99);
-
-                    cal1.set(Calendar.MONTH, Calendar.DECEMBER);
-                    cal1.set(Calendar.DAY_OF_MONTH, 30);
-
-                    int currentDOY = cal1.get(Calendar.DAY_OF_YEAR);
-                    Log.d("DOY", String.valueOf(currentDOY));
-                    end = cal1.getTimeInMillis();
-
-                    cal1.set(Calendar.HOUR_OF_DAY, 0);
-                    cal1.set(Calendar.MINUTE, 0);
-                    cal1.set(Calendar.SECOND, 0);
-                    cal1.set(Calendar.MILLISECOND, 0);
-
-                    cal1.set(Calendar.MONTH, Calendar.JANUARY);
-                    cal1.set(Calendar.DAY_OF_MONTH, 1);
-
-                    begin = cal1.getTimeInMillis();
-                }
-
+                running = false;
             }
-
-            Log.d("Haetaan aikavälillä ", timeConverter.convertMillisToDate(begin) + " - " + timeConverter.convertMillisToDate(end));
-
-            //usageStatsUsageTimeApps = lUsageStatsManager.queryAndAggregateUsageStats(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1), System.currentTimeMillis());
-            usageStatsUsageTimeApps = lUsageStatsManager.queryAndAggregateUsageStats(begin, end);
         }
+
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
+
+
         listUsageTimeApps = new ArrayList<>();
         listUsageTimeApps.addAll(usageStatsUsageTimeApps.values());
 
@@ -654,11 +547,146 @@ class AppStatsQueryThread extends Thread{
         }
     }
 
+    private void getStats()
+    {
+        //Tarvitsee API 22
+        final UsageStatsManager lUsageStatsManager = (UsageStatsManager) mContext.getSystemService(Context.USAGE_STATS_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            //Hakee localen nykyisestä käyttökielestä
+            //String locale = Locale.getDefault().getCountry();
+            //Log.d("Locale", String.valueOf(locale));
+
+            long begin = 0;
+            long end = 0;
+
+            querySelection = getSharedPreferences("spinnerselection", "top5appsfragment");
+
+            if(querySelection != null)
+            {
+                Log.d("query", querySelection);
+                if(querySelection.equals(mContext.getResources().getString(R.string.daily_text)))
+                {
+                    end = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(3);
+                    //timezone "UTC" toimii ainoastaan jos käytössä on GMT + 0
+                    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+03:00"));
+                    TimeZone tz = cal.getTimeZone();
+                    Log.d("Timezone", String.valueOf(tz.getDisplayName()));
+                    Log.d("Cal,instance", String.valueOf(cal.getTimeInMillis()));
+                    cal.set(Calendar.HOUR_OF_DAY, 3);
+                    cal.set(Calendar.MINUTE, 0);
+                    cal.set(Calendar.SECOND, 0);
+                    cal.set(Calendar.MILLISECOND, 0);
+
+                    begin = cal.getTimeInMillis();
+
+                }
+
+                //Ongelmallinen hakumetodi viikottainen, koska jenkeissä viikko alkaa sunnuntaista ja lopppuu lauantaihin (palauttaa siis SUN - SAT
+                if(querySelection.equals(mContext.getResources().getString(R.string.weekly_text)))
+                {
+                    Calendar cal1 = Calendar.getInstance(TimeZone.getTimeZone("GMT+03:00"));
+
+                    cal1.set(Calendar.HOUR_OF_DAY, 3);
+                    cal1.set(Calendar.MINUTE, 0);
+                    cal1.set(Calendar.SECOND, 0);
+                    cal1.set(Calendar.MILLISECOND, 0);
+
+                    end = cal1.getTimeInMillis();
+
+
+                    Log.d("getFirstDayOfWeek", String.valueOf(Calendar.getInstance().getFirstDayOfWeek()));
+
+                    int dayOfWeek = cal1.get(Calendar.DAY_OF_WEEK);
+                    Log.d("DOW", String.valueOf(dayOfWeek));
+
+                    if(cal1.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+                    {
+                        cal1.add(Calendar.DAY_OF_WEEK, 1);
+                        end = cal1.getTimeInMillis();
+                    }
+
+                    else
+                    {
+                        end = cal1.getTimeInMillis();
+                    }
+
+
+                    cal1.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); //TODO: tee tähän asetus, jolla voi valita aloitusviikonpäivän
+
+
+                    cal1.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                    begin = cal1.getTimeInMillis();
+                }
+
+                if(querySelection.equals(mContext.getResources().getString(R.string.monthly_text)))
+                {
+                    Calendar cal1 = Calendar.getInstance(TimeZone.getTimeZone("GMT+3"));
+                    cal1.set(Calendar.HOUR_OF_DAY, 23);
+                    cal1.set(Calendar.MINUTE, 59);
+                    cal1.set(Calendar.SECOND, 59);
+                    cal1.set(Calendar.MILLISECOND, 99);
+
+                    int currentDOM = cal1.get(Calendar.DAY_OF_MONTH);
+                    Log.d("DOM", String.valueOf(currentDOM));
+                    end = cal1.getTimeInMillis();
+
+                    cal1.set(Calendar.HOUR_OF_DAY, 0);
+                    cal1.set(Calendar.MINUTE, 0);
+                    cal1.set(Calendar.SECOND, 0);
+                    cal1.set(Calendar.MILLISECOND, 0);
+                    cal1.set(Calendar.DAY_OF_MONTH, 1);
+
+                    begin = cal1.getTimeInMillis();
+                }
+
+                //YEARLY
+                if(querySelection.equals(mContext.getResources().getString(R.string.yearly_text)))
+                {
+                    Calendar cal1 = Calendar.getInstance(TimeZone.getTimeZone("GMT+3"));
+                    cal1.set(Calendar.HOUR_OF_DAY, 23);
+                    cal1.set(Calendar.MINUTE, 59);
+                    cal1.set(Calendar.SECOND, 59);
+                    cal1.set(Calendar.MILLISECOND, 99);
+
+                    cal1.set(Calendar.MONTH, Calendar.DECEMBER);
+                    cal1.set(Calendar.DAY_OF_MONTH, 30);
+
+                    int currentDOY = cal1.get(Calendar.DAY_OF_YEAR);
+                    Log.d("DOY", String.valueOf(currentDOY));
+                    end = cal1.getTimeInMillis();
+
+                    cal1.set(Calendar.HOUR_OF_DAY, 0);
+                    cal1.set(Calendar.MINUTE, 0);
+                    cal1.set(Calendar.SECOND, 0);
+                    cal1.set(Calendar.MILLISECOND, 0);
+
+                    cal1.set(Calendar.MONTH, Calendar.JANUARY);
+                    cal1.set(Calendar.DAY_OF_MONTH, 1);
+
+                    begin = cal1.getTimeInMillis();
+                }
+
+            }
+
+            Log.d("Haetaan aikavälillä ", timeConverter.convertMillisToDate(begin) + " - " + timeConverter.convertMillisToDate(end));
+
+            //usageStatsUsageTimeApps = lUsageStatsManager.queryAndAggregateUsageStats(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1), System.currentTimeMillis());
+            usageStatsUsageTimeApps = lUsageStatsManager.queryAndAggregateUsageStats(begin, end);
+        }
+    }
+
     //Metodi, jolla voi hakea jaetun String -muuttujan
     private String getSharedPreferences(String sharedPrefTag, String sharedVariableTag)
     {
         SharedPreferences pref = mContext.getSharedPreferences(sharedPrefTag, MODE_PRIVATE);
         return pref.getString(sharedVariableTag, null);
+    }
+
+    interface ThreadReport
+    {
+        void setTextViewTexts();
     }
 
 }

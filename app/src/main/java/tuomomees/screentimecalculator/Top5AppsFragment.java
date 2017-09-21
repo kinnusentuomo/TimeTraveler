@@ -26,8 +26,8 @@ import android.widget.Toast;
 
 import static android.content.Context.MODE_PRIVATE;
 
-
-public class Top5AppsFragment extends Fragment implements AdapterView.OnItemSelectedListener{
+//Implementoidaan Threadin rajapinta, jotta voidaan päivittää UI:ta Threadin kautta
+public class Top5AppsFragment extends Fragment implements AdapterView.OnItemSelectedListener, AppStatsQueryThread.ThreadReport  {
 
     private static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 100;
 
@@ -110,7 +110,12 @@ public class Top5AppsFragment extends Fragment implements AdapterView.OnItemSele
         Log.d("Shared variable", sharedVariable + " with tag " + sharedVariableTag);
     }
 
-    protected void setTextViewTexts()
+    public String getSpinnerItem()
+    {
+        return item;
+    }
+
+    public void setTextViewTexts()
     {
         //Nollataan tekstikentät, mikäli tekstien haku epäonnistuu
         top1AppTextView.setText(getResources().getString(R.string.usagerequestfailed_text));
@@ -229,8 +234,9 @@ public class Top5AppsFragment extends Fragment implements AdapterView.OnItemSele
         //Luodaan adapteri spinnerille
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.queries_array, android.R.layout.simple_spinner_item);
+                //R.array.queries_array, R.layout.custom_spinner_layout);
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
     }
 

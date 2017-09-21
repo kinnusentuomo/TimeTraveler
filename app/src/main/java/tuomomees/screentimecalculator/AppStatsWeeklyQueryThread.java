@@ -83,6 +83,7 @@ public class AppStatsWeeklyQueryThread extends Thread{
         return totalUsageTime;
     }
 
+    //TODO: tämän korvaaminen RunOnUI()  -metodilla, jossa lisätään muuttujat suoraan tekstikenttiin
     private void shareStats()
     {
         totalUsageMonday = timeConverter.convertMillisToMinutes(totalUsageMonday);
