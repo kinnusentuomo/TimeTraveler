@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/backgroundstripesright">
+
+    <TableRow>
+        <Spinner
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:id="@+id/spinnerTimeSelection"
+            android:overlapAnchor="false"
+            style="@style/SpinnerTheme" />
+    </TableRow>
+
+    <TableRow>
+        <tuomomees.screentimecalculator.customTextView
+            android:layout_weight="1"
+            android:text="hours/minutes"
+            android:gravity="end"
+            />
+    </TableRow>
+
+    <TableRow>
+        <ListView
+            android:layout_weight="1"
+            android:id="@+id/applicationList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableRow>
+</TableLayout>
