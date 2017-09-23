@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 
 /**
@@ -43,14 +42,15 @@ public class AppStatsManager extends AppCompatActivity {
 
     //Metodi, jolla voi hakea tarvittavien applikaatioiden app-ikonit paketin nimen avulla
     protected Drawable getIconDrawable(String packageName) {
-        Drawable icon;
+        Drawable icon = null;
 
         PackageManager packageManager = mContext.getPackageManager();
         try {
             icon = packageManager.getApplicationIcon(packageName);
         } catch (PackageManager.NameNotFoundException e) {
 
-            icon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher_round, null); //Saattaa aiheuttaa crashin threadissa koska käyttää drawable
+            //Aiheuttaa crashin appinfogetterthreadissa käytettynä
+            //icon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher_round, null); //Saattaa aiheuttaa crashin threadissa koska käyttää drawable
             e.printStackTrace();
         }
 

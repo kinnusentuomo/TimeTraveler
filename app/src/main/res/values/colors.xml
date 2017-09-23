@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="statusBarColor">#000</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="TextViewColor">#FFFF</color>
-    <color name="statusBarColor">#330000</color>
+    <color name="colorWhite">#FFFF</color>
+    <color name="colorBlack">#000</color>
+    <color name="colorCyan">#00ffff</color>
+    <color name="colorBlue">#0000ff</color>
+    <color name="colorLightgray">#d3d3d3</color>
+    <color name="colorLightblue">#add8e6</color>
+    <color name="colorDarkgray">#a9a9a9</color>
+    <color name="colorTransparentDarkgray">#99000000</color>
 </resources>

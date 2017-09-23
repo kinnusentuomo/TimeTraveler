@@ -1,7 +1,13 @@
 package tuomomees.screentimecalculator;
 
+import android.app.AppOpsManager;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Process;
+import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +23,8 @@ import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 
+    private static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 100;
+
     //näytön koon muuttujat
     int height, width;
 
@@ -26,6 +34,7 @@ public class MainActivity extends FragmentActivity {
     Top5AppsFragment top5AppsFragment;
     LastTimeUsedFragment lastTimeUsedFragment;
     WeeklyBarDiagramFragment weeklyBarDiagramFragment;
+    MostUsedAppsFragment mostUsedAppsFragment;
 
 
     Thread appStatsQueryThread;
@@ -44,15 +53,10 @@ public class MainActivity extends FragmentActivity {
         top5AppsFragment = new Top5AppsFragment();
         lastTimeUsedFragment = new LastTimeUsedFragment();
         weeklyBarDiagramFragment = new WeeklyBarDiagramFragment();
-
-
-
-
-
-
+        mostUsedAppsFragment = new MostUsedAppsFragment();
 
         //Alustaa liukupäivityksen käyttöön
-        initializeSwipeRefresh();
+        //initializeSwipeRefresh();
 
         //Alustaa viewpagerin käyttöön
         initializeViewPager();
@@ -68,6 +72,55 @@ public class MainActivity extends FragmentActivity {
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
     }
 
+    //Mikäli sovelluksella on tarvittavat oikeudet, hakee statistiikan. Muussa tapauksessa pyytää tarvittavia oikeuksia.
+    private void fillStats() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (hasPermission()){
+                //Alustetaan aloitusarvot, jotta arvot eivät kertaudu
+                Toast.makeText(this.getApplicationContext(), "this app has permissions", Toast.LENGTH_LONG).show();
+            }else{
+                requestPermission();
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("MainActivity", "resultCode " + resultCode);
+        switch (requestCode){
+            case MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS:
+                fillStats();
+                break;
+        }
+    }
+
+    private void requestPermission() {
+
+        String toastPermissionRequest = getResources().getString(R.string.permission_request);
+        Toast.makeText(this.getApplicationContext(), toastPermissionRequest, Toast.LENGTH_LONG).show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            startActivityForResult(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS), MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private boolean hasPermission() {
+        AppOpsManager appOps = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            appOps = (AppOpsManager)
+                    this.getSystemService(Context.APP_OPS_SERVICE);
+        }
+        int mode = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            assert appOps != null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                        Process.myUid(), this.getPackageName());
+            }
+        }
+        return mode == AppOpsManager.MODE_ALLOWED;
+    }
+
     public void initializeThreads()
     {
 
@@ -80,15 +133,6 @@ public class MainActivity extends FragmentActivity {
         appStatsWeeklyQueryThread.run();
         appStatsQueryThread.run();
 
-
-
-        //Testataan uutta Threadia
-        AppInfoGetterThread appInfoGetterThread = new AppInfoGetterThread();
-        appInfoGetterThread.initializeContext(context);
-        appInfoGetterThread.initializeActivity(this);
-        appInfoGetterThread.start();
-        //appInfoGetterThread.run();
-
         //odotellaan, että thread on valmis
         try {
             appStatsQueryThread.join();
@@ -100,6 +144,7 @@ public class MainActivity extends FragmentActivity {
     //Metodi, joka alustaa käyttöön SwipeRefreshin
     protected void initializeSwipeRefresh()
     {
+        /*
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
 
         swipeLayout.setOnRefreshListener(
@@ -132,6 +177,7 @@ public class MainActivity extends FragmentActivity {
                     }
                 }
         );
+        */
     }
 
     protected void initializeViewPager()
@@ -143,7 +189,7 @@ public class MainActivity extends FragmentActivity {
 
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
-        private  int NUM_ITEMS = 3;
+        private  int NUM_ITEMS = 4;
 
         MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
@@ -169,6 +215,8 @@ public class MainActivity extends FragmentActivity {
                     //return top5AppsFragment;
                     //return null;
                     return weeklyBarDiagramFragment;
+                case 3:
+                    return mostUsedAppsFragment;
                 default:
                     return null;
             }
@@ -185,6 +233,8 @@ public class MainActivity extends FragmentActivity {
                     return getResources().getString(R.string.lastusedpage_title);
                 case 2: 
                     return "Weekly Diagram";
+                case 3:
+                    return "TEST PAGE";
                 default:
                     return "Page" + position;
             }

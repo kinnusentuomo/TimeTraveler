@@ -1,25 +1,25 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="colorAccent">@color/colorCyan</item>
+        <item name="android:statusBarColor">@color/colorBlack</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="TextViewTheme" parent="@style/TextAppearance.AppCompat">
-        <item name="android:textColor">@color/TextViewColor</item>
+        <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textSize">20sp</item>
         <item name="android:typeface">serif</item>
     </style>
 
     <style name="SpinnerTheme" parent="@style/AppTheme">
-        <item name="android:textColor">@color/TextViewColor</item>
-        <item name="android:textSize">10sp</item>
+        <item name="android:popupBackground">@android:color/transparent</item>
+        <item name="android:textColor">@color/colorWhite</item>
     </style>
 
     <style name="viewPagerTitleStrip">
@@ -32,5 +32,7 @@
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splashscreen</item>
     </style>
+
+
 
 </resources>
