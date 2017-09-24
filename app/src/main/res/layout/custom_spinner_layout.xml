@@ -2,7 +2,7 @@
 <tuomomees.screentimecalculator.customTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50sp"
-    android:background="@drawable/background_listview_row"
+    android:background="@drawable/background_spinner_dropdown_item"
     android:textColor="@color/colorWhite"
     android:text="Tämä tässä on esimerkkiteksti"
     android:gravity="center"

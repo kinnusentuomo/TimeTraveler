@@ -7,6 +7,7 @@ import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
@@ -43,6 +44,8 @@ class AppInfoGetterThread extends Thread implements Runnable{
     private ArrayList<Model> sentModels;
     private String sentSpinnerSelection;
     private String orderParameter = null;
+
+    private long totalAppUsedTime = 0;
 
     void initializeAdapter(ArrayAdapter a)
     {
@@ -217,6 +220,8 @@ class AppInfoGetterThread extends Thread implements Runnable{
                     newApp.setAppTotalUsageTime(totalTimeInForeground);
                     //newApp.setAppIcon(aStatsManager.getIconDrawable(lUsageStats.getPackageName())); //TODO: ei toimi, koska joudutaan käyttämään UI threadia
 
+                    totalAppUsedTime = totalAppUsedTime + totalTimeInForeground;
+
                     //Lisätään juuri luotu olio olioiden listaan
                     appInfoObjectList.add(newApp);
                 }
@@ -335,6 +340,17 @@ class AppInfoGetterThread extends Thread implements Runnable{
 
                     if(orderParameter.equals("usageTime"))
                     {
+                        Drawable newIcon = ResourcesCompat.getDrawable(sentContext.getResources(), R.mipmap.ic_launcher_round, null);
+
+                        String totalUsageConvertedTime = String.format("%d:%d",
+                                TimeUnit.MILLISECONDS.toHours(totalAppUsedTime),
+                                TimeUnit.MILLISECONDS.toMinutes(totalAppUsedTime) -
+                                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(totalAppUsedTime)),
+                                TimeUnit.MILLISECONDS.toSeconds(totalAppUsedTime) -
+                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(totalAppUsedTime)));
+
+                        sentModels.add(new Model(newIcon, "Total apps usage", totalUsageConvertedTime));
+
                         for(int i = 0; i < appInfoObjectList.size(); i++)
                         {
                             Drawable icon;
