@@ -37,6 +37,7 @@ public class MainActivity extends FragmentActivity {
     MostUsedAppsFragment mostUsedAppsFragment;
     LastUsedAppsFragment lastUsedAppsFragment;
 
+    //asd
 
     Thread appStatsQueryThread;
     Thread appStatsWeeklyQueryThread;
