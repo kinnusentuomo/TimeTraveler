@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:background="@drawable/background_listview_row"
-
     >
 
     <!-- icon -->
@@ -22,6 +21,11 @@
     <tuomomees.screentimecalculator.customTextView
         android:id="@+id/item_title"
         android:maxLength="20"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="true"
+        android:marqueeRepeatLimit ="marquee_forever"
         android:textColor="@color/colorWhite"
         android:text="Järjestelmän Käynnistostysohjelma"
         android:layout_width="wrap_content"
@@ -29,7 +33,7 @@
         android:layout_toRightOf="@+id/item_icon"
         android:layout_alignBaseline="@+id/item_counter"
         android:textSize="13sp"
-        />
+        android:maxLines="1" />
 
     <tuomomees.screentimecalculator.customTextView
         android:layout_width="match_parent"

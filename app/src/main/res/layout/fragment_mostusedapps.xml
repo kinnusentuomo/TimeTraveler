@@ -3,11 +3,20 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@drawable/backgroundstripesright">
 
+    <android.support.v4.widget.Space
+        android:layout_height="12sp"
+        />
+
     <TableRow>
         <Spinner
+            android:background="@drawable/background_listview_row"
             android:layout_weight="1"
+            android:textAlignment="center"
+            android:paddingLeft="12sp"
+            android:paddingRight="12sp"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
+            android:spinnerMode="dropdown"
             android:id="@+id/spinnerTimeSelection"
             android:overlapAnchor="false"
             style="@style/SpinnerTheme" />
@@ -24,7 +33,7 @@
     <TableRow>
         <ListView
             android:layout_weight="1"
-            android:id="@+id/applicationList"
+            android:id="@+id/applicationMostUsedList"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </TableRow>

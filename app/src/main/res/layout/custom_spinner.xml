@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Custom spinner item layout -->
+<tuomomees.screentimecalculator.customTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1"
+    style="?android:attr/spinnerItemStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textAlignment="center"
+    android:gravity="end"
+    android:textColor="@color/colorWhite"
+    android:drawableEnd="@android:drawable/arrow_down_float"
+    android:maxLines="1"
+    />

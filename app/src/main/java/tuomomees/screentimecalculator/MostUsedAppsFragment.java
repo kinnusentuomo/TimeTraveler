@@ -20,17 +20,12 @@ import java.util.ArrayList;
 public class MostUsedAppsFragment extends Fragment implements AdapterView.OnItemSelectedListener, AppInfoGetterThread.ThreadReport {
 
     View view;
-    ListView applicationListView;
-    Spinner spinner;
     ArrayList<String> listItems=new ArrayList<>();
-    ArrayAdapter<String> adapter;
     AppInfoGetterThread appInfoGetterThread;
     ArrayList<Model> models = new ArrayList<Model>();
     MyAdapter mAdapter;
     String spinnerSelection;
     AppStatsManager appStatsManager;
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,7 +36,7 @@ public class MostUsedAppsFragment extends Fragment implements AdapterView.OnItem
 
         initializeWidgets();
         initializeSpinner();
-        startThread();
+        //startThread(); //threadi startataan spinnerin valinnan vaihtuessa
 
         return view;
     }
@@ -64,14 +59,10 @@ public class MostUsedAppsFragment extends Fragment implements AdapterView.OnItem
         mAdapter = new MyAdapter(this.getActivity(), generateData());
 
         // if extending Activity 2. Get ListView from activity_main.xml
-        ListView listView = (ListView) view.findViewById(R.id.applicationList);
+        ListView listView = (ListView) view.findViewById(R.id.applicationMostUsedList);
 
         // 3. setListAdapter
         listView.setAdapter(mAdapter);
-
-
-
-
     }
 
     public void initializeSpinner()
@@ -82,13 +73,11 @@ public class MostUsedAppsFragment extends Fragment implements AdapterView.OnItem
 
         //Luodaan adapteri spinnerille
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.queries_array,R.layout.custom_spinner);
                 //R.array.queries_array, android.R.layout.simple_spinner_item);
-                R.array.queries_array, android.R.layout.simple_spinner_item);
 
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(R.layout.custom_spinner_layout);
-
-
 
         spinner.setAdapter(adapter);
     }
@@ -106,35 +95,12 @@ public class MostUsedAppsFragment extends Fragment implements AdapterView.OnItem
         appInfoGetterThread.initializeActivity(this.getActivity());
         appInfoGetterThread.initializeContext(this.getContext());
         appInfoGetterThread.initializeAppStatsManager(appStatsManager);
-        //appInfoGetterThread.initializeAdapter(adapter);
         appInfoGetterThread.initializeAdapter(mAdapter);
         appInfoGetterThread.initializeList(listItems);
         appInfoGetterThread.initializeModelList(models);
+        appInfoGetterThread.setOrderParameter("usageTime");
         appInfoGetterThread.start();
     }
-
-
-    public void addTextToListView(String str)
-    {
-        //counter++;
-        //listItems.add(counter + ": " + str + "\n");
-
-        if(str != null)
-        {
-            listItems.add(str);
-            adapter.notifyDataSetChanged();
-        }
-        else
-        {
-            //listItems.add("Failed to add data.");
-            Log.d("Error ", "cannot set list text");
-            adapter.notifyDataSetChanged();
-        }
-
-        Log.d("Adding to list", str);
-    }
-
-
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -144,11 +110,8 @@ public class MostUsedAppsFragment extends Fragment implements AdapterView.OnItem
         startThread();
     }
 
-
-
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     @Override

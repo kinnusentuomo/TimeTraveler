@@ -31,23 +31,18 @@ class AppInfoGetterThread extends Thread implements Runnable{
     private ThreadReport observer = null;
     private boolean running = true;
 
-    private Converter timeConverter;
-    private AppStatsManager appStatsManager;
-    private Context sentContext;
-
     //Olioiden lista, johon talletetaan appInfo -oliot
     private List<AppInfo> appInfoObjectList;
-
 
     //TESTISTISTI
     private Activity sentActivity;
     private ArrayAdapter sentAdapter;
+    private AppStatsManager appStatsManager;
+    private Context sentContext;
     private ArrayList<String> listItems;
     private ArrayList<Model> sentModels;
-
-    String sentSpinnerSelection;
-
-
+    private String sentSpinnerSelection;
+    private String orderParameter = null;
 
     void initializeAdapter(ArrayAdapter a)
     {
@@ -64,33 +59,39 @@ class AppInfoGetterThread extends Thread implements Runnable{
         this.observer = newObserver;
     }
 
+    void setOrderParameter(String str)
+    {
+        orderParameter = str;
+    }
 
     public void run() {
 
         try {
             while (running) {
-                //Log.d("Käynnistetään Thread ", "AppInfoGetter");
                 //Do Stuff
-
                 setStartValues();
                 initializeVariables();
-                sentSpinnerSelection = observer.getSpinnerItem();
-                //updateUiThread();
-                //getSpinnerItemFromFragment();
-                getStats();
+
+                if(orderParameter.equals("usageTime"))
+                {
+                    sentSpinnerSelection = sentContext.getResources().getString(R.string.daily_text);
+                    if(observer.getSpinnerItem() != null)
+                    {
+                        sentSpinnerSelection = observer.getSpinnerItem();
+                    }
+                    getStats();
+                }
+                else if(orderParameter.equals("lastTimeUsed"))
+                {
+                    sentSpinnerSelection = sentContext.getResources().getString(R.string.daily_text);
+                    getStats();
+                }
+
                 checkSavedStats();
                 checkMostUsedApp();
                 orderArrayFromHighestToLowest();
-
-                //printResults();
                 updateUiThread();
 
-                //observer.generateData(Drawable icon, String appName, int appRanking);
-
-
-
-                //When ready set running = false
-                //Log.d("Sammutetaan thread ", "AppInfoGetter");
                 running = false;
             }
         } catch (Exception e) {
@@ -100,7 +101,10 @@ class AppInfoGetterThread extends Thread implements Runnable{
 
     void initializeContext(Context c)
     {
-        sentContext = c;
+        if(c != null)
+        {
+            sentContext = c;
+        }
     }
 
     void initializeModelList(ArrayList list)
@@ -126,24 +130,15 @@ class AppInfoGetterThread extends Thread implements Runnable{
 
     private void initializeVariables()
     {
-        //aStatsManager = new AppStatsManager(sentContext);
-        timeConverter = new Converter();
         appInfoObjectList = new ArrayList<>();
-
-    }
-
-    private void printResults()
-    {
-        for(int i = 0; i < appInfoObjectList.size(); i++)
-        {
-            observer.addTextToListView(appInfoObjectList.get(i).getAppPackageName() +  " " +
-                appInfoObjectList.get(i).getAppTotalUsageTime());
-        }
     }
 
     void initializeActivity(Activity a)
     {
-        sentActivity = a;
+        if(a != null)
+        {
+            sentActivity = a;
+        }
     }
 
     //Metodi, jossa haetaan appien infot
@@ -173,7 +168,7 @@ class AppInfoGetterThread extends Thread implements Runnable{
         //WEEKLY
         if(sentSpinnerSelection.equals(sentContext.getResources().getString(R.string.weekly_text)))
         {
-
+            //TODO: appsien tietojen hakeminen viikon ajalle
         }
 
         //MONTHLY
@@ -190,6 +185,11 @@ class AppInfoGetterThread extends Thread implements Runnable{
 
         }
 
+        else
+        {
+            Log.d("sentSpinnerSelection", "Has Failed");
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mapOfAppsUsage = lUsageStatsManager.queryAndAggregateUsageStats(begin, end);
         }
@@ -201,22 +201,26 @@ class AppInfoGetterThread extends Thread implements Runnable{
         for (UsageStats lUsageStats : listOfAppsUsage) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-                //Hakee applikaation käyttöajan
-                long totalTimeInForeground = lUsageStats.getTotalTimeInForeground();
+                if(lUsageStats.getTotalTimeInForeground() > TimeUnit.MILLISECONDS.toMinutes(1))
+                {
+                    //Hakee applikaation käyttöajan
+                    long totalTimeInForeground = lUsageStats.getTotalTimeInForeground();
 
-                //Hakee koska appia on viimeksi käytetty ja tallettaa sen long tyyppiseen muuttujaan
-                long lastTimeUsed = lUsageStats.getLastTimeUsed();
+                    //Hakee koska appia on viimeksi käytetty ja tallettaa sen long tyyppiseen muuttujaan
+                    long lastTimeUsed = lUsageStats.getLastTimeUsed();
 
-                //Luodaan applikaation infot sisältävä uusi olio joka "kierroksella"
-                AppInfo newApp = new AppInfo();
-                newApp.setAppLastTimeUsedMillis(lastTimeUsed);
-                //newApp.setAppName(aStatsManager.getAppLabel(lUsageStats.getPackageName(), sentContext)); //TODO: tähän tarvitaan konteksti
-                newApp.setAppPackageName(lUsageStats.getPackageName());
-                newApp.setAppTotalUsageTime(totalTimeInForeground);
-                //newApp.setAppIcon(aStatsManager.getIconDrawable(lUsageStats.getPackageName()));
+                    //Luodaan applikaation infot sisältävä uusi olio joka "kierroksella"
+                    AppInfo newApp = new AppInfo();
+                    newApp.setAppLastTimeUsedMillis(lastTimeUsed);
+                    //newApp.setAppName(aStatsManager.getAppLabel(lUsageStats.getPackageName(), sentContext)); //TODO: tähän tarvitaan konteksti
+                    newApp.setAppPackageName(lUsageStats.getPackageName());
+                    newApp.setAppTotalUsageTime(totalTimeInForeground);
+                    //newApp.setAppIcon(aStatsManager.getIconDrawable(lUsageStats.getPackageName())); //TODO: ei toimi, koska joudutaan käyttämään UI threadia
 
-                //Lisätään juuri luotu olio olioiden listaan
-                appInfoObjectList.add(newApp);
+                    //Lisätään juuri luotu olio olioiden listaan
+                    appInfoObjectList.add(newApp);
+                }
+
             }
         }
     }
@@ -252,27 +256,52 @@ class AppInfoGetterThread extends Thread implements Runnable{
     //Metodi, jolla voi järjestää array:n haluamansa arvon mukaan
     private void orderArrayFromHighestToLowest()
     {
-        Collections.sort(appInfoObjectList, new Comparator<AppInfo>() {
-            @Override public int compare(AppInfo p1, AppInfo p2) {
-                return (int) (p1.getAppTotalUsageTime() - p2.getAppTotalUsageTime()); // Ascending
-            }
-        });
 
-        //Käännetään vielä toisinpäin, jotta eniten käytetty ylimpänä
-        Collections.reverse(appInfoObjectList);
-
-        for (int i = 0; i < appInfoObjectList.size(); i++)
+        if(orderParameter.equals("usageTime"))
         {
-            String printable;
-            printable = appInfoObjectList.get(i).getAppName() + " " + appInfoObjectList.get(i).getAppPackageName() +
-                    " " + appInfoObjectList.get(i).getAppLastTimeUsedMillis() + " " + appInfoObjectList.get(i).getAppTotalUsageTime();
-            Log.d("Ordered", printable);
-        }
-    }
+            Collections.sort(appInfoObjectList, new Comparator<AppInfo>() {
+                @Override public int compare(AppInfo p1, AppInfo p2) {
+                    return (int) (p1.getAppTotalUsageTime() - p2.getAppTotalUsageTime()); // Ascending
+                }
+            });
 
-    private void getSpinnerItemFromFragment()
-    {
-        String spinnerSelection = observer.getSpinnerItem();
+            //Käännetään vielä toisinpäin, jotta eniten käytetty ylimpänä
+            Collections.reverse(appInfoObjectList);
+
+            for (int i = 0; i < appInfoObjectList.size(); i++)
+            {
+                String printable;
+                printable = appInfoObjectList.get(i).getAppName() + " " + appInfoObjectList.get(i).getAppPackageName() +
+                        " " + appInfoObjectList.get(i).getAppLastTimeUsedMillis() + " " + appInfoObjectList.get(i).getAppTotalUsageTime();
+                Log.d("Ordered", printable);
+            }
+        }
+
+        else if(orderParameter.equals("lastTimeUsed"))
+        {
+            Collections.sort(appInfoObjectList, new Comparator<AppInfo>() {
+                @Override public int compare(AppInfo p1, AppInfo p2) {
+                    return (int) (p1.getAppLastTimeUsedMillis() - p2.getAppLastTimeUsedMillis()); // Ascending
+                }
+            });
+
+            //Käännetään vielä toisinpäin, jotta eniten käytetty ylimpänä
+            Collections.reverse(appInfoObjectList);
+
+            for (int i = 0; i < appInfoObjectList.size(); i++)
+            {
+                String printable;
+                printable = appInfoObjectList.get(i).getAppName() + " " + appInfoObjectList.get(i).getAppPackageName() +
+                        " " + appInfoObjectList.get(i).getAppLastTimeUsedMillis() + " " + appInfoObjectList.get(i).getAppTotalUsageTime();
+                Log.d("Ordered", printable);
+            }
+        }
+
+        else
+        {
+            Log.d("Error: orderParameter", "cant order");
+        }
+
     }
 
     //Thread ForceClose
@@ -283,12 +312,10 @@ class AppInfoGetterThread extends Thread implements Runnable{
 
     interface ThreadReport
     {
-        //void setTextViewTexts();
         String getSpinnerItem();
-        void addTextToListView(String str);
     }
 
-    public void initializeAppStatsManager(AppStatsManager a)
+    void initializeAppStatsManager(AppStatsManager a)
     {
         appStatsManager = a;
     }
@@ -305,23 +332,51 @@ class AppInfoGetterThread extends Thread implements Runnable{
 
                 while(runThis)
                 {
-                    for(int i = 0; i < appInfoObjectList.size(); i++)
+
+                    if(orderParameter.equals("usageTime"))
                     {
-                        Drawable icon;
-                        icon = appStatsManager.getIconDrawable(appInfoObjectList.get(i).getAppPackageName());
+                        for(int i = 0; i < appInfoObjectList.size(); i++)
+                        {
+                            Drawable icon;
+                            icon = appStatsManager.getIconDrawable(appInfoObjectList.get(i).getAppPackageName());
 
 
-                        long millis = appInfoObjectList.get(i).getAppTotalUsageTime();
+                            long millis = appInfoObjectList.get(i).getAppTotalUsageTime();
 
-                        String convertedTime = String.format("%d:%d",
-                                TimeUnit.MILLISECONDS.toHours(millis),
-                                TimeUnit.MILLISECONDS.toMinutes(millis) -
-                                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
-                                TimeUnit.MILLISECONDS.toSeconds(millis) -
-                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+                            String convertedTime = String.format("%d:%d",
+                                    TimeUnit.MILLISECONDS.toHours(millis),
+                                    TimeUnit.MILLISECONDS.toMinutes(millis) -
+                                            TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+                                    TimeUnit.MILLISECONDS.toSeconds(millis) -
+                                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
 
-                        sentModels.add(new Model(icon , appStatsManager.getAppLabel(appInfoObjectList.get(i).getAppPackageName(), sentContext), convertedTime));
+                            sentModels.add(new Model(icon , appStatsManager.getAppLabel(appInfoObjectList.get(i).getAppPackageName(), sentContext), convertedTime));
+                        }
                     }
+
+                    else if(orderParameter.equals("lastTimeUsed"))
+                    {
+                        for(int i = 0; i < appInfoObjectList.size(); i++)
+                        {
+                            Drawable icon;
+                            icon = appStatsManager.getIconDrawable(appInfoObjectList.get(i).getAppPackageName());
+
+
+                            long millis = appInfoObjectList.get(i).getAppLastTimeUsedMillis();
+
+                            Converter  timeConverter = new Converter();
+
+                            String convertedTime = timeConverter.convertMillisToDate(millis);
+
+                            sentModels.add(new Model(icon , appStatsManager.getAppLabel(appInfoObjectList.get(i).getAppPackageName(), sentContext), convertedTime));
+                        }
+                    }
+
+                    else
+                    {
+                        Log.d("AIGThread Error", "orderParameter wrong");
+                    }
+
 
                     sentAdapter.notifyDataSetChanged();
                     Log.d("Thread valmis", "tuhotaan");

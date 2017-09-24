@@ -35,6 +35,7 @@ public class MainActivity extends FragmentActivity {
     LastTimeUsedFragment lastTimeUsedFragment;
     WeeklyBarDiagramFragment weeklyBarDiagramFragment;
     MostUsedAppsFragment mostUsedAppsFragment;
+    LastUsedAppsFragment lastUsedAppsFragment;
 
 
     Thread appStatsQueryThread;
@@ -54,6 +55,7 @@ public class MainActivity extends FragmentActivity {
         lastTimeUsedFragment = new LastTimeUsedFragment();
         weeklyBarDiagramFragment = new WeeklyBarDiagramFragment();
         mostUsedAppsFragment = new MostUsedAppsFragment();
+        lastUsedAppsFragment = new LastUsedAppsFragment();
 
         //Alustaa liukupäivityksen käyttöön
         //initializeSwipeRefresh();
@@ -65,7 +67,7 @@ public class MainActivity extends FragmentActivity {
         checkDisplayStats();
 
         //Alustaa Threadin ja threadhandlerin
-        initializeThreads();
+        //initializeThreads();
 
         //Tekee notification barista läpinäkyvän
         Window w = getWindow(); // in Activity's onCreate() for instance
@@ -123,8 +125,6 @@ public class MainActivity extends FragmentActivity {
 
     public void initializeThreads()
     {
-
-
 
 
         Context context = this.getApplicationContext();
@@ -189,7 +189,7 @@ public class MainActivity extends FragmentActivity {
 
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
-        private  int NUM_ITEMS = 4;
+        private  int NUM_ITEMS = 5;
 
         MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
@@ -207,16 +207,16 @@ public class MainActivity extends FragmentActivity {
             switch (position) {
                 case 0: // Fragment # 0 - This will show FirstFragment
                     //return Top5AppsFragment.newInstance(position);
-                    return top5AppsFragment;
+                    return mostUsedAppsFragment;
                 case 1: // Fragment # 0 - This will show FirstFragment different title
                     //return LastTimeUsedFragment.newInstance(1, "Page");
-                    return lastTimeUsedFragment;
+                    return lastUsedAppsFragment;
                 case 2: // Fragment # 1 - This will show SecondFragment
-                    //return top5AppsFragment;
-                    //return null;
                     return weeklyBarDiagramFragment;
                 case 3:
-                    return mostUsedAppsFragment;
+                    return lastTimeUsedFragment;
+                case 4:
+                    return top5AppsFragment;
                 default:
                     return null;
             }
@@ -228,13 +228,15 @@ public class MainActivity extends FragmentActivity {
 
             switch (position) {
                 case 0:
-                    return getResources().getString(R.string.top5appspage_title);
+                    return "\r\n" + getResources().getString(R.string.top5appspage_title);
                 case 1:
-                    return getResources().getString(R.string.lastusedpage_title);
+                    return "\r\n" +getResources().getString(R.string.lastusedpage_title);
                 case 2: 
-                    return "Weekly Diagram";
+                    return "\r\n" +"Weekly Diagram";
                 case 3:
-                    return "TEST PAGE";
+                    return "\r\n" +"TEST PAGE";
+                case 4:
+                    return "\r\n" +"Second test page";
                 default:
                     return "Page" + position;
             }
