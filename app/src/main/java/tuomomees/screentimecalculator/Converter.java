@@ -70,14 +70,16 @@ class Converter {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
     }
 
+    @SuppressLint("DefaultLocale")
     String convertMillisToDate(long millis)
     {
         // Create a calendar object that will convert the date and time value in milliseconds to date.
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
         calendar.setTimeInMillis(millis);
 
         //Tämä vain jos UTC
-        calendar.add(Calendar.HOUR, 3);
+        //calendar.add(Calendar.HOUR, 3);
 
         String date = "" + calendar.get(Calendar.DAY_OF_MONTH) + "." + calendar.get(Calendar.MONTH) + "." + calendar.get(Calendar.YEAR);
         String time = "" + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND);

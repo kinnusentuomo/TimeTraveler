@@ -122,9 +122,10 @@ public class AppStatsWeeklyQueryThread extends Thread{
 
         totalUsageTime = 0;
 
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+03:00"));
+        Calendar cal = Calendar.getInstance();
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        cal.set(Calendar.HOUR_OF_DAY, 3);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);

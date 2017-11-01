@@ -188,7 +188,7 @@ public class MainActivity extends FragmentActivity {
 
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
-        private  int NUM_ITEMS = 5;
+        private  int NUM_ITEMS = 3;
 
         MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
@@ -212,10 +212,12 @@ public class MainActivity extends FragmentActivity {
                     return lastUsedAppsFragment;
                 case 2: // Fragment # 1 - This will show SecondFragment
                     return weeklyBarDiagramFragment;
+                /*
                 case 3:
                     return lastTimeUsedFragment;
                 case 4:
                     return top5AppsFragment;
+                    */
                 default:
                     return null;
             }

@@ -144,6 +144,7 @@ class AppInfoGetterThread extends Thread implements Runnable{
         }
     }
 
+    @SuppressLint("DefaultLocale")
     //Metodi, jossa haetaan appien infot
     private void getStats() {
 
@@ -151,9 +152,10 @@ class AppInfoGetterThread extends Thread implements Runnable{
 
         Map<String, UsageStats> mapOfAppsUsage = null;
 
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar cal = Calendar.getInstance();
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
 
-        cal.set(Calendar.HOUR_OF_DAY, 3);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
@@ -165,13 +167,18 @@ class AppInfoGetterThread extends Thread implements Runnable{
         if(sentSpinnerSelection.equals(sentContext.getResources().getString(R.string.daily_text)))
         {
             begin = cal.getTimeInMillis();
-            end = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(3);
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+            end = cal.getTimeInMillis();
         }
 
         //WEEKLY
         if(sentSpinnerSelection.equals(sentContext.getResources().getString(R.string.weekly_text)))
         {
             //TODO: appsien tietojen hakeminen viikon ajalle
+            cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            begin = cal.getTimeInMillis();
+            cal.add(Calendar.WEEK_OF_YEAR, 1);
+            end = cal.getTimeInMillis();
         }
 
         //MONTHLY

@@ -78,6 +78,7 @@ public class WeeklyBarDiagramFragment extends Fragment {
 
     protected void convertBarDiagramData()
     {
+        /*
         totalUsageMonday = Long.parseLong(mondayStr);
         totalUsageTuesday = Long.parseLong(tuesdayStr);
         totalUsageWednesday = Long.parseLong(wednesdayStr);
@@ -85,6 +86,7 @@ public class WeeklyBarDiagramFragment extends Fragment {
         totalUsageFriday = Long.parseLong(fridayStr);
         totalUsageSaturday = Long.parseLong(saturdayStr);
         totalUsageSunday = Long.parseLong(sundayStr);
+        */
     }
 
     protected void setBarDiagramData()
