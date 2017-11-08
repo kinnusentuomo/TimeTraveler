@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -152,7 +151,7 @@ class AppInfoGetterThread extends Thread implements Runnable{
 
         Map<String, UsageStats> mapOfAppsUsage = null;
 
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(java.util.TimeZone.getTimeZone("GMT"));
         cal.setFirstDayOfWeek(Calendar.MONDAY);
 
         cal.set(Calendar.HOUR_OF_DAY, 0);
